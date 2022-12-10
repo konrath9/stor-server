@@ -189,7 +189,7 @@ export default {
     
             mailer.sendMail({
                 to: email,
-                from: 'rachidratilal@gmail.com',
+                from: 'taynankonrath@gmail.com',
                 template: 'auth/forgot_password',
                 context: { token },
             }, (err) => {

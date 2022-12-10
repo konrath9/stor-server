@@ -2,10 +2,10 @@
    "type": "postgres",
    "host": "localhost",
    "port": 5432,
-   "username": "postgres",
-   "password": "23Mussonguita@25",
-   "database": "stor",
-   "synchronize": false,
+   "username": "taynan",
+   "password": "taynan",
+   "database": "teste",
+   "synchronize": true,
    "entities": [
       "src/models/*.ts"
    ],

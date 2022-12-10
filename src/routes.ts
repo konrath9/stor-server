@@ -27,6 +27,9 @@ routes.put('/update-user/:userId', upload.single('image'), UsersController.updat
 routes.get('/classroom', ClassroomsController.show)
 routes.post('/classroom/:userId', ClassroomsController.create)
 
+routes.get('/myclasses', ClassroomsController.showMyClasses)
+routes.delete('/myclasses/delete', ClassroomsController.delete)
+
 routes.get('/connections', ConnectionsController.index)
 routes.post('/connections', ConnectionsController.create)
 

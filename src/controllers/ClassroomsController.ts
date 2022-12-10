@@ -1,6 +1,7 @@
+import { RandomUUIDOptions } from "crypto";
 import { Request, Response } from "express";
 import { join } from "path";
-import { Brackets, createQueryBuilder, getRepository, UpdateResult } from "typeorm";
+import { Brackets, createQueryBuilder, getConnection, getRepository, UpdateResult } from "typeorm";
 import Classroom from "../models/Classroom";
 import Schedule from "../models/Schedules";
 import User from "../models/Users";
@@ -38,11 +39,56 @@ export default {
             .addSelect("user.resetToken", "user")
             .leftJoinAndSelect("user.image", "image")
             .leftJoinAndSelect("classroom.weekday", "weekday")
-            .leftJoinAndSelect("classroom.schedules", "schedules")
-            .where("classroom.subject = :subject", { subject: subject })
+            .leftJoinAndSelect("classroom.schedules", "schedules")            
+            .where("classroom.subject like :subject", { subject: subject })
             .getMany();
 
         return res.json(classroom)
+    },
+
+    async showMyClasses(req:Request, res: Response) {
+        const filters = req.query;
+
+        const classroomsRepository = getRepository(Classroom);
+
+        const subject = filters.subject as string;
+
+        if (!filters.subject) {
+            return res.status(400).json({
+                error: 'Missing filters to serch classes'
+            })
+        }
+
+        const classroom = await classroomsRepository.createQueryBuilder("classroom")
+            .leftJoinAndSelect("classroom.user", "user", )
+            .addSelect("user.password", "user")
+            .addSelect("user.resetToken", "user")
+            .leftJoinAndSelect("user.image", "image")
+            .leftJoinAndSelect("classroom.weekday", "weekday")
+            .leftJoinAndSelect("classroom.schedules", "schedules")
+            .where("classroom.userId = :subject", { subject: subject })
+            .getMany();
+
+        return res.json(classroom)
+    },
+
+    async delete(req:Request, res: Response) {
+        const filters = req.query;
+
+        const subject = filters.subject as string;
+
+        if (!filters.subject) {
+            return res.status(400).json({
+                error: 'Missing filters to serch classes'
+            })
+        }        
+
+        await getConnection()
+            .createQueryBuilder()
+            .delete()
+            .from(Classroom)
+            .where("id = :subject", { subject: subject })
+            .execute();
     },
 
     async create(req:Request, res: Response) {
